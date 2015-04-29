@@ -44,7 +44,7 @@
     <IncrementalBuild>false</IncrementalBuild>
     <RegisterForComInterop>true</RegisterForComInterop>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>false</DebugSymbols>
@@ -62,6 +62,18 @@
       <HintPath>..\CookComputing.XmlRpcV2.dll</HintPath>
     </Reference>
     <Reference Include="Extensibility, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <Reference Include="NetOffice">
+      <HintPath>..\packages\NetOffice.Core.Net35.1.7.2.0\lib\net35\NetOffice.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="OfficeApi">
+      <HintPath>..\packages\NetOffice.Core.Net35.1.7.2.0\lib\net35\OfficeApi.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="OutlookApi">
+      <HintPath>..\packages\NetOffice.Outlook.Net35.1.7.2.0\lib\net35\OutlookApi.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="System">
       <HintPath>System.dll</HintPath>
       <Name>System</Name>
@@ -82,6 +94,10 @@
     <Reference Include="System.XML">
       <HintPath>System.XML.dll</HintPath>
       <Name>System.XML</Name>
+    </Reference>
+    <Reference Include="VBIDEApi">
+      <HintPath>..\packages\NetOffice.Core.Net35.1.7.2.0\lib\net35\VBIDEApi.dll</HintPath>
+      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -184,6 +200,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -241,6 +258,7 @@
     <Content Include="Resources\settings.png" />
     <Content Include="Resources\Success.gif" />
     <Content Include="Resources\Task.png" />
+    <Content Include="RibbonUI.xml" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -269,8 +287,7 @@
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>"%25Windir%25\Microsoft.NET\Framework64\v2.0.50727\regasm" "$(TargetPath)"</PostBuildEvent>
   </PropertyGroup>
   <ProjectExtensions>
     <VisualStudio>

@@ -28,6 +28,9 @@ namespace OpenERPOutlookPlugin
     using outlook = Microsoft.Office.Interop.Outlook;
     using OpenERPClient;
 
+    using Outlook = NetOffice.OutlookApi;
+    using Office = NetOffice.OfficeApi;
+
 
     
 
@@ -47,8 +50,14 @@ namespace OpenERPOutlookPlugin
     /// <seealso class='IDTExtensibility2' />
 
     [GuidAttribute("C86B5760-1254-4F40-BD25-2094A2A678C4"), ProgId("OpenERPOutlookPlugin.Connect")]
-    public class Connect : Object, Extensibility.IDTExtensibility2
+    public class Connect : Object, Extensibility.IDTExtensibility2, Office.IRibbonExtensibility
     {
+
+
+        Outlook.Application _outlookApplication ;
+
+
+        #region IDTExtensibility2
         /// <summary>
         ///		Implements the constructor for the Add-in object.
         ///		Place your initialization code within this method.
@@ -77,14 +86,25 @@ namespace OpenERPOutlookPlugin
         /// <seealso class='IDTExtensibility2' />
         public void OnConnection(object application, Extensibility.ext_ConnectMode connectMode, object addInInst, ref System.Array custom)
         {
-            applicationObject = application;
+
+            try
+            {
+                _outlookApplication = new Outlook.Application(null, application);
+            }
+            catch (Exception ex)
+            {
+                string message = string.Format("An error occured.{0}{0}{1}", Environment.NewLine, ex.Message);
+                MessageBox.Show(message, "OPENERP", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            ///////////////////////////////////////////////////////------------------------------------------------------------------------------------------------------
+           /* applicationObject = application;
             addInInstance = addInInst;
 
             if (connectMode != Extensibility.ext_ConnectMode.ext_cm_Startup)
             {
                 OnStartupComplete(ref custom);
                 
-            }
+            }*/
         }
 
         /// <summary>
@@ -100,11 +120,22 @@ namespace OpenERPOutlookPlugin
         /// <seealso class='IDTExtensibility2' />
         public void OnDisconnection(Extensibility.ext_DisconnectMode disconnectMode, ref System.Array custom)
         {
-            if (disconnectMode != Extensibility.ext_DisconnectMode.ext_dm_HostShutdown)
+            try
+            {
+                if (null != _outlookApplication)
+                    _outlookApplication.Dispose();
+            }
+            catch (Exception ex)
+            {
+                string message = string.Format("An error occured.{0}{0}{1}", Environment.NewLine, ex.Message);
+                MessageBox.Show(message, "OPENERP", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            //------------------------------------------------------------------------------------------------
+            /*if (disconnectMode != Extensibility.ext_DisconnectMode.ext_dm_HostShutdown)
             {
                 OnBeginShutdown(ref custom);
             }
-            applicationObject = null;
+            applicationObject = null;*/
         }
 
         /// <summary>
@@ -157,13 +188,15 @@ namespace OpenERPOutlookPlugin
       
         public void OnStartupComplete(ref System.Array custom)
         {
+           
+            //-----------------------------------------------------------------------------------------------------------------------------------------------------
             /*
              
              * When outlook is opened it loads a Menu if Outlook plugin is installed.
              * OpenERP - > Push, Partner ,Documents, Configuration
              
              */
-            Microsoft.Office.Interop.Outlook.Application app = null;
+          /*  Microsoft.Office.Interop.Outlook.Application app = null;
             try
             {
                 app = new Microsoft.Office.Interop.Outlook.Application();
@@ -223,10 +256,51 @@ namespace OpenERPOutlookPlugin
                 object oActiveExplorer;
                 oActiveExplorer = applicationObject.GetType().InvokeMember("ActiveExplorer", BindingFlags.GetProperty, null, applicationObject, null);
                 oCommandBars = (office.CommandBars)oActiveExplorer.GetType().InvokeMember("CommandBars", BindingFlags.GetProperty, null, oActiveExplorer, null);
-            }
+            }*/
                  
 
         }
+        #endregion
+
+        #region IRibbonExtenibility
+
+         /// <summary>
+        /// reads text from ressource
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        private static string ReadString(string fileName)
+        {
+            System.IO.Stream ressourceStream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream(typeof(Connect).Assembly.GetName().Name + "." + fileName);
+            if (ressourceStream == null)
+                throw (new System.IO.IOException("Error accessing resource Stream."));
+
+            System.IO.StreamReader textStreamReader = new System.IO.StreamReader(ressourceStream);
+            if (textStreamReader == null)
+                throw (new System.IO.IOException("Error accessing resource File."));
+
+            string text = textStreamReader.ReadToEnd();
+            ressourceStream.Close();
+            textStreamReader.Close();
+            return text;
+        }
+
+        
+
+        public string GetCustomUI(string RibbonID)
+        {
+            try
+            {
+                return ReadString("RibbonUI.xml");
+            }
+            catch (Exception ex)
+            {
+                string message = string.Format("An error occured.{0}{0}{1}", Environment.NewLine, ex.Message);
+                MessageBox.Show(message, "OPENERP", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return "";
+            }
+        }
+        #endregion
 
         void btn_open_configuration_form_Click(Microsoft.Office.Core.CommandBarButton Ctrl, ref bool CancelDefault)
         {
