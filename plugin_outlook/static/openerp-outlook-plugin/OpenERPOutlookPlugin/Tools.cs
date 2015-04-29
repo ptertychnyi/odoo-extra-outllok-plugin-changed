@@ -21,7 +21,7 @@ using System;
 using System.Collections;
 using System.Drawing;
 using System.IO;
-using outlook = Microsoft.Office.Interop.Outlook;
+using outlook = NetOffice.OutlookApi;
 
 
 namespace OpenERPOutlookPlugin

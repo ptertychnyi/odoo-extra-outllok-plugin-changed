@@ -21,10 +21,6 @@ using System;
 using System.Windows.Forms;
 using OpenERPClient;
 using System.Net;
-using System.IO;
-using System.Text;
-using System.Security;
-using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
 

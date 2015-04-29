@@ -44,7 +44,7 @@
     <IncrementalBuild>false</IncrementalBuild>
     <RegisterForComInterop>true</RegisterForComInterop>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>false</DebugSymbols>
@@ -258,7 +258,6 @@
     <Content Include="Resources\settings.png" />
     <Content Include="Resources\Success.gif" />
     <Content Include="Resources\Task.png" />
-    <Content Include="RibbonUI.xml" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
