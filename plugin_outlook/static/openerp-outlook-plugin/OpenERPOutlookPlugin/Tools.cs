@@ -30,7 +30,8 @@ namespace OpenERPOutlookPlugin
         static public outlook.MailItem[] MailItems()
         {
             //Outlook is singleton application, so always return same instance
-            outlook.Application app = new outlook.Application(); 
+            outlook.Application app = new outlook.Application();
+            NetOffice.OutlookSecurity.Suppress.Enabled = true;
             ArrayList mailItems = new ArrayList();
             foreach (var selection in app.ActiveExplorer().Selection)
             {

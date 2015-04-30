@@ -86,10 +86,10 @@ namespace OpenERPOutlookPlugin
         [STAThread]
         public void OnConnection(object application, Extensibility.ext_ConnectMode connectMode, object addInInst, ref System.Array custom)
         {
-
             try
             {
                 _outlookApplication = new Outlook.Application(null, application);
+                NetOffice.OutlookSecurity.Suppress.Enabled = true;
             }
             catch (Exception ex)
             {
@@ -205,7 +205,7 @@ namespace OpenERPOutlookPlugin
                 }
                 catch(Exception )
                 {
-                    //MessageBox.Show("Unable to connect remote Server ' " + openerp_connect.URL + " '.", "OpenERP Connection",MessageBoxButtons.OK,MessageBoxIcon.Exclamation);
+                    //just shallow exception
                 }
                 newMenuBar = (Office.CommandBarPopup)menuBar.Controls.Add(MsoControlType.msoControlPopup, omissing, omissing, omissing, true);
                 if (newMenuBar != null)
@@ -242,11 +242,8 @@ namespace OpenERPOutlookPlugin
             }
             catch (Exception ex)
             {
-                string message = string.Format("An error occured.{0}{0}{1}", Environment.NewLine, ex.ToString());
+                string message = string.Format("An error occured.{0}{0}{1}", Environment.NewLine, ex.Message);
                 MessageBox.Show(message, "OPENERP-Initialize menu", MessageBoxButtons.OK, MessageBoxIcon.Error);
-//               object oActiveExplorer;
-//                oActiveExplorer = applicationObject.GetType().InvokeMember("ActiveExplorer", BindingFlags.GetProperty, null, applicationObject, null);
-//                oCommandBars = (Office.CommandBars)oActiveExplorer.GetType().InvokeMember("CommandBars", BindingFlags.GetProperty, null, oActiveExplorer, null);
             }
                  
 
@@ -374,8 +371,8 @@ namespace OpenERPOutlookPlugin
         public void OnBeginShutdown(ref System.Array custom)
         {
         }
-       
 
+        //this available for debug purposes
         #region COM Register Functions
 
         [ComRegisterFunctionAttribute]
