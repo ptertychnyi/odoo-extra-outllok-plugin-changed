@@ -94,5 +94,14 @@ namespace OpenERPOutlookPlugin
             this.Close();
         }
 
+        private void BtnDocOnClick(object sender, EventArgs e)
+        {
+                foreach (NetOffice.OutlookApi.MailItem mailitem in Tools.MailItems())
+                {
+                    Cache.OpenERPOutlookPlugin.Open_Document(mailitem);
+               
+                }
+                this.Close();
+        }
     }
 }

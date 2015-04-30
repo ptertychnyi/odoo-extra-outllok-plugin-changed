@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections;
-using System.Drawing;
 using System.IO;
 using outlook = NetOffice.OutlookApi;
 
@@ -30,8 +29,8 @@ namespace OpenERPOutlookPlugin
     {
         static public outlook.MailItem[] MailItems()
         {
-            Microsoft.Office.Interop.Outlook.Application app = null;
-            app = new Microsoft.Office.Interop.Outlook.Application();
+            //Outlook is singleton application, so always return same instance
+            outlook.Application app = new outlook.Application(); 
             ArrayList mailItems = new ArrayList();
             foreach (var selection in app.ActiveExplorer().Selection)
             {

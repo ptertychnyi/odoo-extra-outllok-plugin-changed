@@ -1,4 +1,7 @@
-﻿namespace OpenERPOutlookPlugin
+﻿using System;
+using System.Windows.Forms;
+
+namespace OpenERPOutlookPlugin
 {
     partial class frm_push_mail
     {
@@ -154,7 +157,30 @@
             this.btn_attach_mail_to_partner.Text = "P&ush ";
             this.btn_attach_mail_to_partner.TextAlign = System.Drawing.ContentAlignment.TopRight;
             this.btn_attach_mail_to_partner.UseVisualStyleBackColor = true;
-            this.btn_attach_mail_to_partner.Click += new System.EventHandler(this.btn_attach_mail_to_partner_Click);
+            this.btn_attach_mail_to_partner.Click += new System.EventHandler((sender, e) =>
+            {
+                try
+                {
+                    if (this.lstview_object.SelectedItems.Count <= 0)
+                    {
+                        throw new Exception("Plese select item from the list to push");
+                    }
+                    foreach (ListViewItem lv in this.lstview_object.SelectedItems)
+                    {
+                        foreach (NetOffice.OutlookApi.MailItem mailItem in Tools.MailItems())
+                        {
+                            Cache.OpenERPOutlookPlugin.PushMail(mailItem, lv.SubItems[1].Name, Convert.ToInt32(lv.Name));
+
+                        }
+                        bool temp = true;
+                    }
+                    this.Close();
+                }
+                catch (Exception ex)
+                {
+                    Connect.handleException(ex);
+                }
+            });
             // 
             // lbldocs
             // 

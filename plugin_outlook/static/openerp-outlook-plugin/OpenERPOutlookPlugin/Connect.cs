@@ -17,6 +17,8 @@
 */
 
 
+using System.Net;
+using System.Net.Sockets;
 using Microsoft.Win32;
 using NetOffice;
 using NetOffice.OfficeApi.Enums;
@@ -52,7 +54,6 @@ namespace OpenERPOutlookPlugin
     [GuidAttribute("C86B5760-1254-4F40-BD25-2094A2A678C4"), ProgId("OpenERPOutlookPlugin.Connect"), ComVisible(true)]
     public class Connect : Object, Extensibility.IDTExtensibility2
     {
-
         private static readonly string _addinOfficeRegistryKey = "Software\\Microsoft\\Office\\Outlook\\AddIns\\";
         private static readonly string _prodId = "OpenERPOutlookPlugin.Connect";
         private static readonly string _addinFriendlyName = "OpenERPOplugin";
@@ -65,11 +66,6 @@ namespace OpenERPOutlookPlugin
         ///		Implements the constructor for the Add-in object.
         ///		Place your initialization code within this method.
         /// </summary>
-
-        public Connect()
-        {
-
-        }
 
         public int cnt_mail = 0;
 
@@ -87,6 +83,7 @@ namespace OpenERPOutlookPlugin
         ///      Object representing this Add-in.
         /// </param>
         /// <seealso class='IDTExtensibility2' />
+        [STAThread]
         public void OnConnection(object application, Extensibility.ext_ConnectMode connectMode, object addInInst, ref System.Array custom)
         {
 
@@ -150,7 +147,7 @@ namespace OpenERPOutlookPlugin
         private Office.CommandBarButton btn_open_partner;
         private Office.CommandBarButton btn_open_document;
         private Office.CommandBarButton btn_open_configuration_form;
-        private Office.CommandBars oCommandBars;
+        //private Office.CommandBars oCommandBars;
         private Office.CommandBar menuBar;
         private Office.CommandBarPopup newMenuBar;
 
@@ -166,11 +163,15 @@ namespace OpenERPOutlookPlugin
             Outlook.Application app = _outlookApplication;
 
             //app = new Microsoft.Office.Interop.Outlook.Application();
-            foreach (var selection in app.ActiveExplorer().Selection)
+
+            try
             {
                 cnt_mail = app.ActiveExplorer().Selection.Count;
             }
-
+            catch (Exception)
+            {
+                return 0;
+            }
             return cnt_mail;
         }
       
@@ -204,27 +205,13 @@ namespace OpenERPOutlookPlugin
                 }
                 catch(Exception )
                 {
-                    MessageBox.Show("Unable to connect remote Server ' " + openerp_connect.URL + " '.", "OpenERP Connection",MessageBoxButtons.OK,MessageBoxIcon.Exclamation);
+                    //MessageBox.Show("Unable to connect remote Server ' " + openerp_connect.URL + " '.", "OpenERP Connection",MessageBoxButtons.OK,MessageBoxIcon.Exclamation);
                 }
                 newMenuBar = (Office.CommandBarPopup)menuBar.Controls.Add(MsoControlType.msoControlPopup, omissing, omissing, omissing, true);
                 if (newMenuBar != null)
                 {
                     newMenuBar.Caption = "OpenERP";
                     newMenuBar.Tag = "My";
-
-                  /*  var commandBars = _outlookApplication.ActiveExplorer().CommandBars;
-                    var newBar = commandBars.Add("Custom2", MsoBarType.msoBarTypeNormal);
-                    var co = newBar.Controls.Add(MsoControlType.msoControlButton, 23);
-                    newBar.Visible = true;*/
-                    
-
-
-                /*    var newBar = commandBars.Add(Name:="Custom2", _ 
-     Position:=msoBarTop, Temporary:=True) 
-newBar.Visible = True  
-Set con = newBar.Controls.Add(Type:=msoControlButton, Id:=23) 
-con.FaceId = 17*/
-
 
                     btn_open_partner = (Office.CommandBarButton)newMenuBar.Controls.Add(MsoControlType.msoControlButton, omissing, omissing, 1, true);
                     btn_open_partner.Style = MsoButtonStyle.msoButtonIconAndCaption;
@@ -257,16 +244,14 @@ con.FaceId = 17*/
             {
                 string message = string.Format("An error occured.{0}{0}{1}", Environment.NewLine, ex.ToString());
                 MessageBox.Show(message, "OPENERP-Initialize menu", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                object oActiveExplorer;
-                oActiveExplorer = applicationObject.GetType().InvokeMember("ActiveExplorer", BindingFlags.GetProperty, null, applicationObject, null);
-                oCommandBars = (Office.CommandBars)oActiveExplorer.GetType().InvokeMember("CommandBars", BindingFlags.GetProperty, null, oActiveExplorer, null);
+//               object oActiveExplorer;
+//                oActiveExplorer = applicationObject.GetType().InvokeMember("ActiveExplorer", BindingFlags.GetProperty, null, applicationObject, null);
+//                oCommandBars = (Office.CommandBars)oActiveExplorer.GetType().InvokeMember("CommandBars", BindingFlags.GetProperty, null, oActiveExplorer, null);
             }
                  
 
         }
         #endregion
-
-      
 
         void btn_open_configuration_form_Click(Office.CommandBarButton Ctrl, ref bool CancelDefault)
         {
@@ -288,7 +273,6 @@ con.FaceId = 17*/
             if (Cache.OpenERPOutlookPlugin == null || Cache.OpenERPOutlookPlugin.isLoggedIn == false)
             {
                 throw new Exception("OpenERP Server is not connected!\nPlease connect OpenERP Server from Configuration Menu.");
-
             }
             return true;
         }
@@ -304,7 +288,7 @@ con.FaceId = 17*/
             {
                 Title = "OpenERP Addin";
             }
-            MessageBox.Show(e.ToString(), Title, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            MessageBox.Show(e.Message, Title, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
         public static void displayMessage(string message)
         {
@@ -337,10 +321,9 @@ con.FaceId = 17*/
             try
             {
                 Connect.isLoggedIn();
-                this.CheckMailCount(); 
+                this.CheckMailCount();
                 if (countMail() == 1)
                 {
-
                     foreach (Outlook.MailItem mailitem in Tools.MailItems())
                     {
                         
@@ -372,7 +355,9 @@ con.FaceId = 17*/
             try
             {
                 Connect.isLoggedIn();
-                this.CheckMailCount(); 
+
+                this.CheckMailCount();
+                
                 if (countMail() == 1)
                 {
                     frm_choose_document_opt frm_doc = new frm_choose_document_opt();    
@@ -389,8 +374,7 @@ con.FaceId = 17*/
         public void OnBeginShutdown(ref System.Array custom)
         {
         }
-        private object applicationObject;
-        private object addInInstance;
+       
 
         #region COM Register Functions
 

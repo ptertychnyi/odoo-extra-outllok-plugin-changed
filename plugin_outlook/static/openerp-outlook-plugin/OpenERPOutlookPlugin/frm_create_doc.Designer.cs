@@ -1,4 +1,7 @@
-﻿namespace OpenERPOutlookPlugin
+﻿using System;
+using OpenERPClient;
+
+namespace OpenERPOutlookPlugin
 {
     partial class frm_create_doc
     {
@@ -88,7 +91,36 @@
             this.btn_create_doc.Text = "&Create ";
             this.btn_create_doc.TextAlign = System.Drawing.ContentAlignment.TopRight;
             this.btn_create_doc.UseVisualStyleBackColor = true;
-            this.btn_create_doc.Click += new System.EventHandler(this.btn_create_doc_Click);
+            this.btn_create_doc.Click += new System.EventHandler((sender, e) =>
+            {
+                try
+                {
+                    if (this.cmboboxcreate.SelectedItem == null)
+                    {
+                        throw new Exception("Please select a document from the document list.");
+                    }
+                    else
+                    {
+                        frm_push_mail pushmail = new frm_push_mail();
+                        Model model = (Model) this.cmboboxcreate.SelectedItem;
+                        foreach (NetOffice.OutlookApi.MailItem mailItem in Tools.MailItems())
+                        {
+                            Cache.OpenERPOutlookPlugin.PushMail(mailItem, model.model, 0);
+
+                        }
+                        bool temp = true;
+                        this.Close();
+                    }
+
+                }
+
+                catch (Exception ex)
+                {
+
+                    Connect.handleException(ex);
+                }
+
+            });
             // 
             // lbtypedoc
             // 

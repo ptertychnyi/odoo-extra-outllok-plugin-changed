@@ -1,4 +1,7 @@
-﻿namespace OpenERPOutlookPlugin
+﻿using System;
+using System.Runtime.CompilerServices;
+
+namespace OpenERPOutlookPlugin
 {
     partial class frm_choose_document_opt
     {
@@ -48,7 +51,7 @@
             this.btn_doc.Text = "&Open an existing Document";
             this.btn_doc.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btn_doc.UseVisualStyleBackColor = true;
-            this.btn_doc.Click += new System.EventHandler(this.btn_doc_Click);
+            this.btn_doc.Click += new EventHandler(BtnDocOnClick); 
             // 
             // btn_cncl
             // 

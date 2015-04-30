@@ -21,7 +21,7 @@ using System;
 using System.Collections;
 using System.Windows.Forms;
 using OpenERPClient;
-using outlook = Microsoft.Office.Interop.Outlook;
+using outlook = NetOffice.OutlookApi;
 
 namespace OpenERPOutlookPlugin
 {

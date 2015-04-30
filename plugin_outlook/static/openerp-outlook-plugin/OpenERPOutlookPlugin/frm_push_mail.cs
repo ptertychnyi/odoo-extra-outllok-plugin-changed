@@ -37,36 +37,6 @@ namespace OpenERPOutlookPlugin
                 cmboboxcreate.Items.Remove("");
         }
 
-       public bool push_mail(string model, int thread_id)
-        {
-            foreach (outlook.MailItem mailItem in Tools.MailItems())
-            {
-                Cache.OpenERPOutlookPlugin.PushMail(mailItem, model, thread_id);
-
-            }
-            return true;
-        }
-
-        private void btn_attach_mail_to_partner_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (lstview_object.SelectedItems.Count <= 0)
-                {
-                    throw new Exception("Plese select item from the list to push");
-                }
-                foreach (ListViewItem lv in lstview_object.SelectedItems)
-                {                   
-                    this.push_mail(lv.SubItems[1].Name, Convert.ToInt32(lv.Name));                                           
-                }                
-                this.Close();
-            }
-            catch (Exception ex)
-            {
-                Connect.handleException(ex);
-            }
-        }
-       
 
         private void frm_push_mail_Load(object sender, EventArgs e)
         {

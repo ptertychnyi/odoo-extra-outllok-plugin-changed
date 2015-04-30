@@ -1,4 +1,4 @@
-/*
+﻿/*
     OpenERP, Open Source Business Applications
     Copyright (c) 2011 OpenERP S.A. <http://openerp.com>
 
@@ -17,7 +17,7 @@
 */
 
 
-﻿using System;
+ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -57,7 +57,12 @@ namespace OpenERPOutlookPlugin
                 {
                     frm_push_mail pushmail = new frm_push_mail();
                     Model model = (Model)cmboboxcreate.SelectedItem;
-                    pushmail.push_mail(model.model, 0);
+                    foreach (NetOffice.OutlookApi.MailItem mailItem in Tools.MailItems())
+                    {
+                        Cache.OpenERPOutlookPlugin.PushMail(mailItem, model.model, 0);
+
+                    }
+                    bool temp = true;
                     this.Close();
                 }
 

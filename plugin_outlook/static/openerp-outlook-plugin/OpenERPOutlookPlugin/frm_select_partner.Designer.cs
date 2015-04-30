@@ -1,3 +1,5 @@
+using System;
+
 namespace OpenERPOutlookPlugin
 {
     partial class frm_select_partner
@@ -77,7 +79,30 @@ namespace OpenERPOutlookPlugin
             this.btn_select_partner_select.Text = "&Link";
             this.btn_select_partner_select.TextAlign = System.Drawing.ContentAlignment.TopRight;
             this.btn_select_partner_select.UseVisualStyleBackColor = true;
-            this.btn_select_partner_select.Click += new System.EventHandler(this.btn_select_partner_select_Click);
+            this.btn_select_partner_select.Click += new System.EventHandler((sender, e) =>
+            {
+                try
+                {
+                    if (this.lstbox_select_partner.SelectedItem == null)
+                    {
+                        throw new Exception("Please select a partner from the list.");
+                    }
+                    else
+                    {
+                        this.txt_select_partner.Text = this.lstbox_select_partner.SelectedItem.ToString();
+                        int partner_id = (int)Cache.OpenERPOutlookPlugin.CreatePartnerRecord(this.lstbox_select_partner.SelectedItem.ToString());
+                        foreach (NetOffice.OutlookApi.MailItem mailItem in Tools.MailItems())
+                        {
+                            Cache.OpenERPOutlookPlugin.CreateContactRecord(partner_id, mailItem.SenderName, mailItem.SenderEmailAddress);
+                        }
+                        this.Close();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Connect.handleException(ex);
+                }
+            });
             // 
             // btn_select_partner_close
             // 
