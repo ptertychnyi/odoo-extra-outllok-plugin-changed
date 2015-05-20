@@ -24,15 +24,15 @@
                         <p>Click on the link above to download the installer for either 32 or 64 bits, and execute it.</p>
                         <p>System requirements:</p>
                         <ol>
-                            <li> MS Outlook 2005 or above.</li>
-                            <li> MS .Net Framework 3.5 or above.</li>
+                            <li> MS Outlook 2010 or above.</li>
+                            <li> MS .Net Framework 4.0 or above.</li>
                         </ol>
                         <p>Outlook plug-in installation:</p>
                         <ol>
                             <li>Save the outlook plugin corresponding to your Office version (Office x86 or Office x64).</li>
                             <li>Double-click on the executable file and install the plugin.</li>
                             <li>Open Outlook (close it and open it again if it is already closed).</li>
-                            <li>From the Outlook menubar: OpenERP -> Configuration.</li>
+                            <li>From the Outlook menubar: Components -> OpenERP -> Configuration.</li>
                             <li>Configure your openerp server.</li>
                         </ol>
                     </xpath>
